@@ -78,3 +78,8 @@ it('completes payment and shows the resulting order in my account',async()=>{
  await waitFor(()=>expect(document.querySelectorAll('.my-order').length).toBe(5));
  expect(document.querySelector('.my-order')).toHaveTextContent('에센셜 릴렉스 셔츠');
 });
+
+it('keeps focus on a field when the deferred route focus runs',async()=>{
+ const callbacks=[];vi.spyOn(window,'requestAnimationFrame').mockImplementation(callback=>{callbacks.push(callback);return callbacks.length});vi.spyOn(window,'cancelAnimationFrame').mockImplementation(()=>{});
+ mount('/signup');const input=await screen.findByLabelText('이름 / 닉네임');input.focus();for(const callback of callbacks)callback(0);expect(input).toHaveFocus();
+});
