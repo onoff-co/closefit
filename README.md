@@ -60,3 +60,7 @@ main에 push하면 .github/workflows/pages.yml에서 설치 → 테스트 → �
 이미지는 사용자 제공 로고와 AI 생성 파일만 사용합니다. 출처는 public/assets/image-provenance.json 및 docs/IMAGE-PROVENANCE.md에 기록합니다. 360° 스튜디오는 준비 중입니다.
 
 테스트와 정적 산출물/HTTP 검증을 수행합니다. 연결된 브라우저가 없어 실제 화면의 시각 검증은 별도로 필요합니다.
+
+## DB CRUD diagram
+
+[Product, member and order CRUD nodes and database relationships](docs/DB-CRUD-DIAGRAM.md).
