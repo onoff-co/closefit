@@ -1,0 +1,5 @@
+import {Link} from 'react-router';import {useStore} from '../state/StoreContext.jsx';import {money} from '../lib/api.js';import ProductImage from './ProductImage.jsx';
+export default function ProductCard({product:p}){
+ const {wish,toggleWish,notify}=useStore(),saved=wish.includes(p.id);
+ return <article className="product-card"><div className="product-photo"><Link to={'/product/'+p.id} aria-label={p.name+' 상세 보기'}><ProductImage product={p}/></Link><span className="product-tag">{p.tag}</span><button className={'heart '+(saved?'saved':'')} aria-label={p.name+' 찜'} aria-pressed={saved} onClick={()=>{toggleWish(p.id);notify(saved?'찜 목록에서 삭제했습니다.':'찜한 상품에 담았습니다.')}}>{saved?'♥':'♡'}</button></div><div className="product-meta">{p.colors.map(c=><i key={c} style={{background:c}}/>)}</div><Link className="product-name" to={'/product/'+p.id}>{p.name}</Link><p className="product-sub">{p.sub}</p><div className="price">{money(p.price)}</div><div className="product-bottom"><span>{p.colors.length} COLORS</span><Link to={'/product/'+p.id} aria-label={p.name+' 옵션 선택'}>＋</Link></div></article>;
+}

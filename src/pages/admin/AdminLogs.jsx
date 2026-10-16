@@ -1,0 +1,2 @@
+import {formatDate} from '../../lib/api.js';
+export default function AdminLogs({entries,audit=false}){return <div className="table-wrap"><table className="admin-table"><thead><tr>{(audit?['변경 일시','작업','대상 ID']:['방문 일시 (KST)','페이지','기기']).map(x=><th key={x}>{x}</th>)}</tr></thead><tbody>{entries.map((entry,i)=><tr key={i}><td>{formatDate(entry.created_at)}</td><td>{audit?entry.action:entry.path}</td><td>{audit?entry.target:entry.device}</td></tr>)}{!entries.length&&<tr><td colSpan="3" className="empty">기록이 없습니다.</td></tr>}</tbody></table></div>}

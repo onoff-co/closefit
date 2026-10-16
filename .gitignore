@@ -1,0 +1,12 @@
+node_modules/
+.env*
+*.tar.gz
+reference.html
+inspect-reference.cjs
+collect.cjs
+dist/
+
+.local/
+coverage/
+
+.openai/

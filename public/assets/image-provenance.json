@@ -1,0 +1,36 @@
+{
+  "policy": "Use only newly AI-generated photographic assets and the user-supplied logo. Never reuse downloaded human or product photography.",
+  "assets": [
+    {
+      "file": "closefit-logo.png",
+      "origin": "user-provided",
+      "kind": "brand-logo"
+    },
+    {
+      "file": "hanger-shirt.png",
+      "origin": "image_gen.imagegen",
+      "kind": "generated-product-concept",
+      "reference_images_used": false
+    },
+    {
+      "file": "hanger-catalog.png",
+      "origin": "image_gen.imagegen",
+      "kind": "generated-product-concepts",
+      "reference_images_used": false
+    },
+    {
+      "file": "ai-autumn-model.png",
+      "origin": "image_gen.imagegen",
+      "kind": "fictional-AI-person-campaign",
+      "reference_images_used": false,
+      "prompt": "Photorealistic high-end Korean menswear ecommerce campaign photograph for a fictional brand. An entirely fictional adult Korean male fashion model, newly invented facial identity, no reference to any real person or celebrity, late 20s with natural short dark hair. Wearing a relaxed taupe textured jacket over an ivory cotton shirt and charcoal wide trousers. Full standing figure in a quiet warm concrete studio, natural autumn daylight, tasteful editorial pose with one hand in trouser pocket, fabric weave and folds clearly visible. Cinematic but natural, no text, no logos, no watermarks. Landscape 16:9 composition, model placed in right two thirds with negative space on left, dark muted olive and warm stone palette matching a premium menswear website. Entirely synthetic original scene and person. No reference photos."
+    },
+    {
+      "file": "ai-textile-closeup.png",
+      "origin": "image_gen.imagegen",
+      "kind": "generated-textile-closeup",
+      "reference_images_used": false,
+      "prompt": "Original photorealistic premium menswear product close-up photograph, wide landscape 16:9 editorial banner. Still life of a folded warm sand cotton shirt, dark indigo denim and olive ribbed knit on warm gray stone, shot very close at an oblique angle. Rich natural textile weave, precise visible stitches, buttons, layered fabric edges and gentle organic folds. Soft side daylight and subdued shadows, quiet olive, taupe, cream and charcoal palette, luxurious understated fashion direction. Garments occupy right side with darker soft negative space on left for website headline. No humans, no hands, no faces, no brand labels, no logos, no text, no watermarks, no borrowed product designs. Newly invented generic garments. This must be an original generated product photograph, not stock photography."
+    }
+  ]
+}

@@ -1,0 +1,2 @@
+import {NavLink} from 'react-router';import {useStore} from '../state/StoreContext.jsx';
+export default function AccountNavigation(){const {cart,wish}=useStore();return <nav className="member-navigation" aria-label="나의 쇼핑 메뉴"><NavLink to="/account">마이페이지</NavLink><NavLink to="/wishlist">찜한 상품 <span>{wish.length}</span></NavLink><NavLink to="/cart">장바구니 <span>{cart.reduce((n,x)=>n+x.qty,0)}</span></NavLink></nav>}
