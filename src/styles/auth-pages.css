@@ -105,17 +105,6 @@
 }
 
 /* Local auth and portfolio demo share the same forms and provider controls. */
-.member-demo-note {
-  margin: 0 0 24px;
-  padding: 14px 16px;
-  border-left: 2px solid var(--olive);
-  background: var(--member-surface);
-  color: var(--member-muted);
-  font-size: 12px;
-  line-height: 1.9;
-  word-break: keep-all;
-}
-.member-demo-note b { color: var(--ink); font-weight: 600; }
 .member-social { margin-top: 28px; }
 .member-social__divider { display: flex; align-items: center; gap: 16px; color: var(--member-muted); font-size: 12px; margin-bottom: 20px; }
 .member-social__divider::before, .member-social__divider::after { content: ""; height: 1px; flex: 1; background: var(--line); }

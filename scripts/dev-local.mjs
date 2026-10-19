@@ -21,6 +21,7 @@ try {
   db = await initializeDatabase(databaseConfig(), adminConfig());
   api = createApp({
     db,
+    allowSocialPreview: true,
     allowedOrigins: ["http://127.0.0.1:" + port, "http://localhost:" + port],
   });
   await new Promise((resolve, reject) => {

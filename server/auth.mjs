@@ -1,5 +1,5 @@
 import { randomBytes, createHash } from "node:crypto";
-import { verifyPassword } from "./passwords.mjs";
+import { verifyPassword, hashPassword } from "./passwords.mjs";
 import { fail, username, password } from "./shared.mjs";
 const hash = (value) => createHash("sha256").update(value).digest("hex");
 function cookieToken(req) {
@@ -66,4 +66,21 @@ export async function login(db, req, res, body) {
     fail(401, "아이디 또는 비밀번호가 올바르지 않습니다.");
   await startSession(db, req, res, member.id);
   return { ok: true };
+}
+
+export async function socialPreviewLogin(db, req, res, body) {
+  const names={kakao:"카카오",google:"구글",naver:"네이버"};
+  const provider=body?.provider;
+  if(typeof provider!=="string"||!Object.hasOwn(names,provider))fail(422,"로그인 서비스를 확인해주세요.");
+  const memberId="closefit-social-"+provider;
+  let profile=await db.get("SELECT id,role FROM members WHERE id=?",[memberId]);
+  if(!profile){
+    const secret=await hashPassword(randomBytes(32).toString("base64url"));
+    try{await db.run("INSERT INTO members(id,username,email,name,password_hash,role) VALUES (?,?,?,?,?,'customer')",[memberId,"cf_social_"+provider,provider+"@login.closefit.test",names[provider]+" 회원",secret]);}
+    catch(error){if(error.code!=="ER_DUP_ENTRY")throw error;}
+    profile=await db.get("SELECT id,role FROM members WHERE id=?",[memberId]);
+  }
+  if(!profile||profile.role!=="customer")fail(409,"소셜 회원 정보를 확인할 수 없습니다.");
+  await startSession(db,req,res,profile.id);
+  return {ok:true};
 }

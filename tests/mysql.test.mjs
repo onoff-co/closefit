@@ -431,3 +431,21 @@ test("SQL manual orders and data survive a new connection; logout invalidates se
     401,
   );
 });
+
+test("social preview is disabled by default and reuses customer-only SQL identities when enabled", async () => {
+ assert.equal((await call("/api/auth/social","POST",{provider:"kakao"})).status,404);
+ const preview=createApp({db,allowSocialPreview:true});preview.listen(0,"127.0.0.1");await once(preview,"listening");
+ const origin="http://127.0.0.1:"+preview.address().port;
+ const social=provider=>fetch(origin+"/api/auth/social",{method:"POST",headers:{Origin:origin,"Content-Type":"application/json"},body:JSON.stringify({provider,role:"admin"})});
+ try {
+  assert.equal((await social("unsupported")).status,422);
+  for(const provider of ["kakao","google","naver"]){
+   const first=await social(provider);assert.equal(first.status,200);const cookie=first.headers.get("set-cookie").split(";")[0];
+   const user=(await (await fetch(origin+"/api/me",{headers:{Cookie:cookie}})).json()).user;assert.equal(user.admin,false);
+   const again=await social(provider);assert.equal(again.status,200);const secondCookie=again.headers.get("set-cookie").split(";")[0];
+   const second=(await (await fetch(origin+"/api/me",{headers:{Cookie:secondCookie}})).json()).user;assert.equal(second.id,user.id);
+   assert.equal((await db.get("SELECT COUNT(*) AS n FROM members WHERE id=?",[user.id])).n,1);
+   assert.equal((await fetch(origin+"/api/admin/products",{headers:{Cookie:cookie}})).status,403);
+  }
+ } finally {await new Promise(resolve=>preview.close(resolve));}
+});

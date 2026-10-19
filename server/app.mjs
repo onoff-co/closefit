@@ -7,6 +7,7 @@ import {
   startSession,
   clearSession,
   login,
+  socialPreviewLogin,
 } from "./auth.mjs";
 import * as products from "./modules/products.mjs";
 import * as members from "./modules/members.mjs";
@@ -49,7 +50,7 @@ function readBody(req) {
     });
   });
 }
-export function createApp({ db, allowedOrigins = [] }) {
+export function createApp({ db, allowedOrigins = [], allowSocialPreview = false }) {
   const attempts = new Map();
   const server = createServer(async (req, res) => {
     res.setHeader("Content-Type", "application/json; charset=utf-8");
@@ -69,7 +70,7 @@ export function createApp({ db, allowedOrigins = [] }) {
       if (writing && ![origin, ...allowedOrigins].includes(req.headers.origin))
         fail(403, "허용되지 않은 요청 출처입니다.");
       if (
-        ["/api/auth/login", "/api/auth/register"].includes(path) &&
+        ["/api/auth/login", "/api/auth/register", "/api/auth/social"].includes(path) &&
         method === "POST"
       ) {
         const key = req.socket.remoteAddress,
@@ -92,6 +93,10 @@ export function createApp({ db, allowedOrigins = [] }) {
       } else if (path === "/api/me" && method === "GET") result = { user };
       else if (path === "/api/auth/login" && method === "POST")
         result = await login(db, req, res, body);
+      else if (path === "/api/auth/social" && method === "POST") {
+        if (!allowSocialPreview) fail(404, "API 경로가 없습니다.");
+        result = await socialPreviewLogin(db, req, res, body);
+      }
       else if (path === "/api/auth/register" && method === "POST") {
         if (body.consent !== true) fail(422, "회원 정보 저장에 동의해주세요.");
         const created = await members.createMember(db, body);

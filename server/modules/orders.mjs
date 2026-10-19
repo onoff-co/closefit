@@ -94,7 +94,7 @@ export async function checkout(db, body, user) {
         user.profile.name,
         user.email,
         total,
-        "포트폴리오 가상 결제",
+        "주문 접수",
       ],
     );
     for (const x of items)

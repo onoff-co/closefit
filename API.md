@@ -32,4 +32,4 @@ npm run dev:local에서는 브라우저 어댑터 대신 실제 HTTP/MySQL API�
 
 ## Portfolio account forms
 
-공개 정적 화면도 ID/PW 로그인과 가입 폼을 제공합니다. POST /api/auth/login은 username/password, POST /api/auth/register는 username/name/email/password/consent를 받습니다. 이는 브라우저 체험 전용이며 비밀번호는 길이만 확인하고 저장하거나 인증에 사용하지 않습니다. 예약 아이디는 customer01/admin입니다. POST /api/auth/social의 provider는 kakao/google/naver이며 실제 OAuth 없이 example.test 체험 회원을 만듭니다. 세션은 기존 데모 로그아웃으로 해제합니다. 로컬 SQL 모드의 소셜 버튼은 준비 중 안내만 표시하며 MySQL 인증을 우회하지 않습니다.
+공개 정적 화면도 ID/PW 로그인과 가입 폼을 제공합니다. POST /api/auth/login은 username/password, POST /api/auth/register는 username/name/email/password/consent를 받습니다. 이는 브라우저 체험 전용이며 비밀번호는 길이만 확인하고 저장하거나 인증에 사용하지 않습니다. 예약 아이디는 customer01/admin입니다. POST /api/auth/social의 provider는 kakao/google/naver이며 실제 OAuth 없이 example.test 체험 회원을 만듭니다. 세션은 기존 데모 로그아웃으로 해제합니다. 로컬 개발 실행(dev:local)은 allowSocialPreview를 명시적으로 활성화해 고객 전용 소셜 회원을 MySQL에 생성·재사용합니다. 실제 OAuth 연동은 없으며 기본 API 실행에서는 이 경로가 비활성화됩니다. 관리자 계정으로 전환하거나 기존 일반 회원 계정을 대신 사용하지 않습니다.

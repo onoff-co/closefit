@@ -13,7 +13,7 @@ function mount(Component) {
     calls.push([path, method, body]);
     if (path === "/api/products") return { products: [] };
     if (path === "/api/me") return { user };
-    if (path === "/api/auth/login" || path === "/api/auth/register") {
+    if (path === "/api/auth/login" || path === "/api/auth/register" || path === "/api/auth/social") {
       user = {
         id: "test",
         admin: false,
@@ -83,11 +83,8 @@ it("local signup rejects mismatched passwords and submits valid form data", asyn
   );
 });
 
-it("keeps local social buttons from bypassing MySQL authentication", async () => {
-  const calls = mount(LoginPage), user = userEvent.setup();
-  for (const name of ["카카오", "구글", "네이버"]) {
-    await user.click(await screen.findByRole("button", {name: name + "로 로그인"}));
-    expect(await screen.findByRole("status")).toHaveTextContent(name + " 로그인은 준비 중입니다.");
-  }
-  expect(calls.some(([path]) => path === "/api/auth/social" || path === "/api/auth/login")).toBe(false);
+it.each([["카카오","kakao"],["구글","google"],["네이버","naver"]])("connects %s login through the local API",async(name,provider)=>{
+ const calls=mount(LoginPage),user=userEvent.setup();
+ await user.click(await screen.findByRole("button",{name:name+"로 로그인"}));
+ await waitFor(()=>expect(calls.some(([path,method,body])=>path==="/api/auth/social"&&method==="POST"&&body.provider===provider)).toBe(true));
 });

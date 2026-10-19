@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router";
 import { useStore } from "../../state/StoreContext.jsx";
 import { request, safeReturn } from "../../lib/api.js";
 import AuthLayout from "./AuthLayout.jsx";
+import SocialLoginButtons from "./SocialLoginButtons.jsx";
 import { ErrorBox } from "../../components/Feedback.jsx";
 export default function SignupPage({ demo = false }) {
   const { user, refreshUser } = useStore(),
@@ -36,9 +37,20 @@ export default function SignupPage({ demo = false }) {
       setBusy(false);
     }
   }
+  async function socialSignup(provider) {
+    setBusy(true);
+    setError("");
+    try {
+      await request("/api/auth/social", "POST", { provider });
+      await refreshUser();
+      navigate(next === "/admin" ? "/account" : next);
+    } catch (err) {
+      setError(err.message);
+      setBusy(false);
+    }
+  }
   return (
     <AuthLayout
-      demo={demo}
       signup
       title={user ? "회원 정보 수정" : "나에게 맞는 옷장의 시작"}
       description={
@@ -48,7 +60,6 @@ export default function SignupPage({ demo = false }) {
       }
       next={next}
     >
-      {demo && <p className="member-demo-note">체험용 아이디·이메일을 입력해주세요. 비밀번호는 저장하지 않으며, 나머지 가입 정보는 이 브라우저에만 저장됩니다.</p>}
       <form className={!user ? "member-form--signup" : undefined} onSubmit={submit}>
         {!user && (
           <label htmlFor="signup-username">
@@ -129,6 +140,7 @@ export default function SignupPage({ demo = false }) {
           {busy ? "저장 중…" : user ? "프로필 저장" : "회원가입"}
         </button>
       </form>
+      {!user && <SocialLoginButtons signup busy={busy} onLogin={socialSignup} />}
     </AuthLayout>
   );
 }

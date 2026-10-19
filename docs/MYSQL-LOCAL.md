@@ -39,7 +39,7 @@ npm run dev는 공개 사이트와 같은 브라우저 목업입니다. npm run 
 - src/pages/auth/LoginPage.jsx: 아이디·비밀번호 로그인
 - src/pages/auth/SignupPage.jsx: 회원가입·본인 프로필
 - src/pages/auth/AuthLayout.jsx: 공통 회원 화면
-- src/pages/auth/SocialLoginButtons.jsx: 소셜 버튼 (공개에서는 모의 로그인, 로컬에서는 준비 중 안내)
+- src/pages/auth/SocialLoginButtons.jsx: 로그인·회원가입 공통 소셜 버튼 (공개 브라우저 계정 / 로컬 SQL 고객 계정)
 - src/demo/auth.js: GitHub Pages의 ID/PW·가입·소셜 체험 (입력한 비밀번호를 저장하지 않음)
 
 ## API
@@ -93,3 +93,5 @@ npm run dev는 공개 사이트와 같은 브라우저 목업입니다. npm run 
 - npm run build && npm run check: GitHub Pages 정적 산출물
 
 통합 테스트는 closefit_test_ 접두사의 임시 DB를 생성·삭제합니다. 실제 closefit_local DB와 분리하며 DB 생성 권한이 필요합니다. CI의 MySQL 서비스는 테스트용 계정만 사용합니다.
+
+소셜 가입·로그인은 외부 OAuth가 아닌 포트폴리오 흐름입니다. npm run dev:local에서만 allowSocialPreview 옵션으로 SQL의 제공자별 고객 계정을 생성·재사용합니다. 일반 API 실행은 해당 경로를 기본 비활성화합니다.

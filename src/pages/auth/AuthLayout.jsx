@@ -6,7 +6,6 @@ export default function AuthLayout({
   title,
   description,
   next = "/account",
-  demo = false,
   children,
 }) {
   return (
@@ -25,7 +24,7 @@ export default function AuthLayout({
       </aside>
       <div className="member-auth__form-panel">
         <div className="member-auth__heading">
-          <p className="eyebrow">CLOSEFIT MEMBERS{demo ? " / DEMO" : ""}</p>
+          <p className="eyebrow">CLOSEFIT MEMBERS</p>
           <h1 id="member-auth-title">{title}</h1>
           <p>{description}</p>
         </div>

@@ -76,9 +76,9 @@ it('completes payment and shows the resulting order in my account',async()=>{
  mount('/cart');const user=userEvent.setup();
  await user.click(await screen.findByRole('button',{name:'결제하기'}));
  await screen.findByRole('heading',{name:'결제 수단'});
- await user.click(screen.getByRole('radio',{name:'계좌이체 체험'}));await user.click(screen.getByRole('checkbox'));
+ await user.click(screen.getByRole('radio',{name:'계좌이체'}));await user.click(screen.getByRole('checkbox'));
  await user.click(screen.getByRole('button',{name:'결제하기'}));
- await screen.findByRole('heading',{name:'가상 결제가 완료되었습니다.'});
+ await screen.findByRole('heading',{name:'주문이 완료되었습니다.'});
  expect(document.querySelector('#bag-count')).toHaveTextContent('0');
  await user.click(screen.getByRole('link',{name:'주문 내역 확인'}));
  await waitFor(()=>expect(document.querySelectorAll('.my-order').length).toBe(5));
@@ -104,6 +104,38 @@ it('registers and returns to a demo account without persisting passwords',async(
 it.each(['카카오','구글','네이버'])('provides %s social demo login without network requests',async(provider)=>{
  const network=vi.spyOn(globalThis,'fetch');mount('/login');const user=userEvent.setup();
  await user.click(await screen.findByRole('button',{name:provider+'로 로그인'}));
- await screen.findByRole('heading',{name:provider+' 체험회원님의 옷장'});
+ await screen.findByRole('heading',{name:provider+' 회원님의 옷장'});
  expect(network).not.toHaveBeenCalled();
+});
+
+it.each(['카카오','구글','네이버'])('connects %s signup and login to one member',async(provider)=>{
+ mount('/signup');const user=userEvent.setup();
+ await user.click(await screen.findByRole('button',{name:provider+'로 가입하기'}));
+ const first=(await request('/api/me')).user;
+ await screen.findByRole('heading',{name:provider+' 회원님의 옷장'});
+ await user.click(document.querySelector('.header-signout'));
+ await user.click(await screen.findByRole('button',{name:provider+'로 로그인'}));
+ await screen.findByRole('heading',{name:provider+' 회원님의 옷장'});
+ expect((await request('/api/me')).user.id).toBe(first.id);
+ setDemoSession('admin');expect((await request('/api/admin/members')).members.filter(m=>m.id===first.id)).toHaveLength(1);
+});
+
+it.each(['/login','/signup','/shop','/product/8','/cart'])('uses storefront copy on %s',async route=>{
+ mount(route);await screen.findByRole('heading',{level:1});
+ expect(document.body).not.toHaveTextContent(/포트폴리오|체험|목업|가상 결제|PORTFOLIO|DEMO|디자인 프리뷰/i);
+ expect(screen.queryByText(/customer01/)).toBeNull();
+});
+
+it("keeps legacy system notes out of account order history", async () => {
+ setDemoSession("customer");const data=JSON.parse(localStorage.getItem("closefit-demo-v1"));
+ data.orders[0].note="포트폴리오 가상 결제";localStorage.setItem("closefit-demo-v1",JSON.stringify(data));
+ mount("/account");await screen.findByText("ORDER #CF000001");
+ expect(document.body).not.toHaveTextContent(/포트폴리오|체험|가상 결제|DEMO/i);
+});
+
+it("opens an existing order without exposing legacy system notes", async () => {
+ setDemoSession("admin");mount("/admin/orders");const user=userEvent.setup();
+ await user.click((await screen.findAllByRole("button",{name:"상세 / 수정"}))[0]);
+ const dialog=screen.getByRole("dialog");expect(dialog).not.toHaveTextContent(/포트폴리오|체험|DEMO/i);
+ expect(screen.getByRole("textbox",{name:"운영 메모"})).toHaveValue("");
 });
