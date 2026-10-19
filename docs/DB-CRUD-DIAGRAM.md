@@ -115,3 +115,7 @@ flowchart TD
 현재 목업의 주문 상태 변경은 재고를 자동 복원하지 않습니다. 실제 DB 구축 시 주문 취소·반품·부분 취소의 재고 복원 정책은 별도 설계가 필요합니다.
 
 매출 집계는 paid, shipping, completed를 포함하고 pending, cancelled를 제외합니다. 관리자 CRUD 변경 이력은 audit 배열에 추가되며 수정·삭제 기능을 제공하지 않습니다.
+
+## 로컬 MySQL 구현 추가
+
+이 문서의 현재 저장 구조 설명은 공개 GitHub Pages 목업과 이전 SQLite 참고 코드 기준입니다. 로컬 MySQL 모드에는 order_items 테이블, 아이디·비밀번호 기반 회원과 세션 테이블이 추가되었습니다. 구현된 스키마는 [server/db/schema.sql](../server/db/schema.sql), 실행·권한·API 설명은 [MYSQL-LOCAL.md](MYSQL-LOCAL.md)를 참고하세요.

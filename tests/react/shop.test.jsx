@@ -31,8 +31,8 @@ describe('React shopping routes',()=>{
   expect(document.querySelectorAll('.nav-menu').length).toBeGreaterThanOrEqual(8);
   expect(document.querySelector('header a[href="/#studio"]')).toBeNull();
   expect(document.querySelector('#studio')).toHaveTextContent('준비 중');
-  await userEvent.hover(screen.getByRole('button',{name:'SHOP 상세 메뉴'}));
-  expect(screen.getByRole('button',{name:'SHOP 상세 메뉴'})).toHaveAttribute('aria-expanded','true');
+  await userEvent.hover(screen.getByRole('button',{name:'SHOP 메뉴 열기'}));
+  expect(screen.getByRole('button',{name:'SHOP 메뉴 열기'})).toHaveAttribute('aria-expanded','true');
  });
  it('connects product, wishlist, cart and account without reloading the catalogue',async()=>{
   const {calls}=mount('/product/8');const user=userEvent.setup();

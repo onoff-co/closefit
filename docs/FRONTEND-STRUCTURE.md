@@ -30,3 +30,7 @@ GitHub Pages에 배포하는 정적 React 쇼핑몰 포트폴리오입니다.
 worker/와 drizzle/는 이전 백엔드 참고 코드입니다. scripts/dev-api.mjs 및 scripts/build.mjs도 이전 로컬/Worker 배포용 참고 코드이며 현재 npm run dev/build에서 사용하지 않습니다. Pages에는 dist/client의 정적 결과물만 배포합니다.
 
 컴포넌트는 PascalCase.jsx, 훅은 useName.js를 사용합니다. 공개 저장소 초기 커밋에는 기존 비공개 배포 설정·실제 로컬 DB·과거 다운로드 이미지 이력을 포함하지 않습니다.
+
+## 로컬 SQL 모드
+
+src/pages/auth/AuthPage.jsx가 로컬 SQL 로그인/가입 화면과 공개 목업 화면을 선택합니다. LoginPage.jsx, SignupPage.jsx, AuthLayout.jsx가 로컬 회원 화면이며 DemoAuthPage.jsx가 공개 체험 화면입니다. src/lib/http-api.js와 server/가 실제 MySQL 연결을 담당합니다. 상세는 [MYSQL-LOCAL.md](MYSQL-LOCAL.md)를 참고하세요.

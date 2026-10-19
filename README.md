@@ -64,3 +64,12 @@ main에 push하면 .github/workflows/pages.yml에서 설치 → 테스트 → �
 ## DB CRUD diagram
 
 [Product, member and order CRUD nodes and database relationships](docs/DB-CRUD-DIAGRAM.md).
+
+## 로컬 MySQL 로그인·회원가입
+
+로컬 SQL 모드에서 아이디·비밀번호 로그인, 회원가입과 관리자 CRUD를 사용합니다. 설정·실행·SQL 파일 경로는 [docs/MYSQL-LOCAL.md](docs/MYSQL-LOCAL.md)를 참고하세요. 공개 GitHub Pages에서는 목업 체험이 유지됩니다.
+
+    npm run db:setup
+    npm run dev:local
+
+.env.local은 Git에서 제외됩니다. 관리자는 ADMIN_USERNAME과 ADMIN_PASSWORD를 사용해 처음 한 번 생성합니다.

@@ -25,3 +25,7 @@
 주문 상태는 pending, paid, shipping, completed, cancelled입니다. 가상 결제는 paid 주문을 생성합니다. paid/shipping/completed만 예시 매출에 포함합니다. 가격은 현재 목업 상품에서 계산하며 재고를 차감합니다. 동일 paymentId 재요청은 기존 주문을 반환합니다.
 
 관리자 역할 검사는 체험 흐름을 보여주기 위한 UI 동작입니다. 보안 인증 기능이 아니며 실제 사용자 정보나 결제 정보에 사용하면 안 됩니다. 기존 worker/index.mjs의 서버 API와 현재 정적 데모 API는 별개입니다.
+
+## 로컬 MySQL API
+
+npm run dev:local에서는 브라우저 어댑터 대신 실제 HTTP/MySQL API를 사용합니다. 아이디 로그인·가입·세션과 SQL CRUD 계약은 [docs/MYSQL-LOCAL.md](docs/MYSQL-LOCAL.md)에 별도로 기록했습니다. 공개 정적 데모의 계약은 유지됩니다.
