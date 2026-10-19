@@ -1,3 +1,4 @@
+import { registerDemoMember, loginDemoMember, socialDemoMember } from "./auth.js";
 import {createDemoData,demoCustomerId,demoAdminId} from './seed.js';
 const KEY='closefit-demo-v1';let memory;
 const clone=value=>structuredClone(value);
@@ -18,10 +19,13 @@ export async function demoRequest(path,method='GET',body,options={}){
  const data=load();let result;const write=method!=='GET';
  if(path==='/api/me'&&method==='GET')result={user:account(data)};
  else if(path==='/api/demo/login'&&method==='POST'){if(!['customer','admin'].includes(body?.role))fail(422,'체험 계정을 선택해주세요.');return {user:setDemoSession(body.role)}}
+ else if(path==='/api/auth/login'&&method==='POST'){loginDemoMember(data,body);result={ok:true}}
+ else if(path==='/api/auth/register'&&method==='POST'){registerDemoMember(data,body);result={ok:true}}
+ else if(path==='/api/auth/social'&&method==='POST'){socialDemoMember(data,body?.provider);result={ok:true}}
  else if(path==='/api/demo/logout'&&method==='POST'){data.session=null;result={ok:true}}
  else if(path==='/api/profile'&&method==='POST'){
   const name=typeof body?.name==='string'?body.name.trim().slice(0,40):'';if(!name||body.consent!==true)fail(422,'닉네임과 데모 데이터 저장 동의를 확인해주세요.');
-  let profile=member(data);if(profile)profile.name=name;else{profile={id:id(),name,email:'guest-'+id().slice(0,8)+'@example.test',created_at:now()};data.members.push(profile);data.session=profile.id}result={ok:true};
+  let profile=member(data);if(profile){profile.name=name;if(body.email!==undefined){const email=String(body.email).trim();if(email.length>150||!/^.+@.+\..+$/.test(email))fail(422,'이메일을 확인해주세요.');if(data.members.some(m=>m.id!==profile.id&&m.email.toLowerCase()===email.toLowerCase()))fail(409,'이미 사용 중인 이메일입니다.');profile.email=email}}else{profile={id:id(),name,email:'guest-'+id().slice(0,8)+'@example.test',created_at:now()};data.members.push(profile);data.session=profile.id}result={ok:true};
  }
  else if(path==='/api/products'&&method==='GET')result={products:data.products.filter(p=>p.active)};
  else if(path==='/api/visits'&&method==='POST'){if(typeof body?.path==='string'&&body.path.startsWith('/')&&typeof body.visitor==='string'){const key=new Date().toISOString().slice(0,10)+':'+body.visitor+':'+body.path;if(!data.visits.some(v=>v.id===key))data.visits.push({id:key,visitor:body.visitor,path:body.path,device:body.device||'desktop',created_at:now()})}result={ok:true}}

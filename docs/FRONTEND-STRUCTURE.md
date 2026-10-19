@@ -33,4 +33,4 @@ worker/와 drizzle/는 이전 백엔드 참고 코드입니다. scripts/dev-api.
 
 ## 로컬 SQL 모드
 
-src/pages/auth/AuthPage.jsx가 로컬 SQL 로그인/가입 화면과 공개 목업 화면을 선택합니다. LoginPage.jsx, SignupPage.jsx, AuthLayout.jsx가 로컬 회원 화면이며 DemoAuthPage.jsx가 공개 체험 화면입니다. src/lib/http-api.js와 server/가 실제 MySQL 연결을 담당합니다. 상세는 [MYSQL-LOCAL.md](MYSQL-LOCAL.md)를 참고하세요.
+src/pages/auth/AuthPage.jsx가 데이터 모드를 전달합니다. LoginPage.jsx, SignupPage.jsx, AuthLayout.jsx는 로컬과 공개 화면에서 공유합니다. SocialLoginButtons.jsx는 소셜 버튼과 준비 중/체험 안내를 담당하고 src/demo/auth.js는 비밀번호를 저장하지 않는 공개 체험 계정을 관리합니다. src/lib/http-api.js와 server/가 실제 MySQL 연결을 담당합니다. 상세는 [MYSQL-LOCAL.md](MYSQL-LOCAL.md)를 참고하세요.

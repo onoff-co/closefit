@@ -4,7 +4,7 @@ import { useStore } from "../../state/StoreContext.jsx";
 import { request, safeReturn } from "../../lib/api.js";
 import AuthLayout from "./AuthLayout.jsx";
 import { ErrorBox } from "../../components/Feedback.jsx";
-export default function SignupPage() {
+export default function SignupPage({ demo = false }) {
   const { user, refreshUser } = useStore(),
     location = useLocation(),
     navigate = useNavigate(),
@@ -21,7 +21,7 @@ export default function SignupPage() {
     setBusy(true);
     setError("");
     try {
-      const data = { name: form.get("name"), email: form.get("email") };
+      const data = { name: form.get("name"), email: form.get("email"), ...(demo && user ? {consent: true} : {}) };
       if (!user)
         Object.assign(data, {
           username: form.get("username"),
@@ -38,6 +38,7 @@ export default function SignupPage() {
   }
   return (
     <AuthLayout
+      demo={demo}
       signup
       title={user ? "회원 정보 수정" : "나에게 맞는 옷장의 시작"}
       description={
@@ -47,7 +48,8 @@ export default function SignupPage() {
       }
       next={next}
     >
-      <form onSubmit={submit}>
+      {demo && <p className="member-demo-note">체험용 아이디·이메일을 입력해주세요. 비밀번호는 저장하지 않으며, 나머지 가입 정보는 이 브라우저에만 저장됩니다.</p>}
+      <form className={!user ? "member-form--signup" : undefined} onSubmit={submit}>
         {!user && (
           <label htmlFor="signup-username">
             아이디
@@ -72,9 +74,10 @@ export default function SignupPage() {
             maxLength="40"
             defaultValue={user?.profile.name || ""}
             required
+            placeholder="이름 또는 닉네임을 입력해주세요"
           />
         </label>
-        <label htmlFor="signup-email">
+        <label className="member-field--wide" htmlFor="signup-email">
           이메일
           <input
             id="signup-email"

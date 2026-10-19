@@ -82,3 +82,12 @@ it("local signup rejects mismatched passwords and submits valid form data", asyn
     ).toBe(true),
   );
 });
+
+it("keeps local social buttons from bypassing MySQL authentication", async () => {
+  const calls = mount(LoginPage), user = userEvent.setup();
+  for (const name of ["카카오", "구글", "네이버"]) {
+    await user.click(await screen.findByRole("button", {name: name + "로 로그인"}));
+    expect(await screen.findByRole("status")).toHaveTextContent(name + " 로그인은 준비 중입니다.");
+  }
+  expect(calls.some(([path]) => path === "/api/auth/social" || path === "/api/auth/login")).toBe(false);
+});

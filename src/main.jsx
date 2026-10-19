@@ -6,6 +6,7 @@ import {StoreProvider} from './state/StoreContext.jsx';
 import './styles/store-base.css';
 import './styles/store-pages.css';
 import './styles/shopping-flow.css';
+import './styles/auth-pages.css';
 createRoot(document.getElementById('root')).render(
  <React.StrictMode><HashRouter><StoreProvider><App/></StoreProvider></HashRouter></React.StrictMode>
 );

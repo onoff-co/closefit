@@ -39,7 +39,8 @@ npm run dev는 공개 사이트와 같은 브라우저 목업입니다. npm run 
 - src/pages/auth/LoginPage.jsx: 아이디·비밀번호 로그인
 - src/pages/auth/SignupPage.jsx: 회원가입·본인 프로필
 - src/pages/auth/AuthLayout.jsx: 공통 회원 화면
-- src/pages/auth/DemoAuthPage.jsx: GitHub Pages의 목업 체험
+- src/pages/auth/SocialLoginButtons.jsx: 소셜 버튼 (공개에서는 모의 로그인, 로컬에서는 준비 중 안내)
+- src/demo/auth.js: GitHub Pages의 ID/PW·가입·소셜 체험 (입력한 비밀번호를 저장하지 않음)
 
 ## API
 

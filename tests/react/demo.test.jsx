@@ -55,13 +55,19 @@ it('resets edits, session, wishlist and cart back to seeded data',async()=>{
 });
 it('supports guest signup, logout and administrator login',async()=>{
  mount('/signup');const user=userEvent.setup();
- await user.type(await screen.findByLabelText('이름 / 닉네임'),'예시회원');
- await user.click(screen.getByRole('checkbox'));await user.click(screen.getByRole('button',{name:'회원가입 체험하기'}));
+ await user.type(await screen.findByLabelText('아이디'),'newcustomer');
+ await user.type(screen.getByLabelText('이름 / 닉네임'),'예시회원');
+ await user.type(screen.getByLabelText('이메일'),'new@example.test');
+ await user.type(screen.getByLabelText('비밀번호',{exact:true}),'example-password');
+ await user.type(screen.getByLabelText('비밀번호 확인'),'example-password');
+ await user.click(screen.getByRole('checkbox'));await user.click(screen.getByRole('button',{name:'회원가입'}));
  await screen.findByRole('heading',{name:'예시회원님의 옷장'});
  await user.click(document.querySelector('.header-signout'));
- await screen.findByRole('button',{name:'관리자 계정으로 체험'});
+ await screen.findByLabelText('아이디');
  expect(document.querySelector('.header-signout')).toBeNull();
- await user.click(screen.getByRole('button',{name:'관리자 계정으로 체험'}));
+ await user.type(screen.getByLabelText('아이디'),'admin');
+ await user.type(screen.getByLabelText('비밀번호'),'example-password');
+ await user.click(screen.getByRole('button',{name:'로그인'}));
  await screen.findByRole('heading',{name:'스토어 한눈에 보기'});
 });
 it('completes payment and shows the resulting order in my account',async()=>{
@@ -82,4 +88,22 @@ it('completes payment and shows the resulting order in my account',async()=>{
 it('keeps focus on a field when the deferred route focus runs',async()=>{
  const callbacks=[];vi.spyOn(window,'requestAnimationFrame').mockImplementation(callback=>{callbacks.push(callback);return callbacks.length});vi.spyOn(window,'cancelAnimationFrame').mockImplementation(()=>{});
  mount('/signup');const input=await screen.findByLabelText('이름 / 닉네임');input.focus();for(const callback of callbacks)callback(0);expect(input).toHaveFocus();
+});
+
+it('registers and returns to a demo account without persisting passwords',async()=>{
+ const input={username:'newcustomer',name:'예시회원',email:'new@example.test',password:'example-password',consent:true};
+ await request('/api/auth/register','POST',input);const first=(await request('/api/me')).user;
+ await request('/api/demo/logout','POST');
+ await request('/api/auth/login','POST',{username:input.username,password:input.password});
+ expect((await request('/api/me')).user.id).toBe(first.id);
+ expect(localStorage.getItem('closefit-demo-v1')).not.toContain(input.password);
+ await expect(request('/api/auth/register','POST',input)).rejects.toMatchObject({status:409});
+ await expect(request('/api/auth/login','POST',{username:'missing',password:input.password})).rejects.toMatchObject({status:401});
+});
+
+it.each(['카카오','구글','네이버'])('provides %s social demo login without network requests',async(provider)=>{
+ const network=vi.spyOn(globalThis,'fetch');mount('/login');const user=userEvent.setup();
+ await user.click(await screen.findByRole('button',{name:provider+'로 로그인'}));
+ await screen.findByRole('heading',{name:provider+' 체험회원님의 옷장'});
+ expect(network).not.toHaveBeenCalled();
 });

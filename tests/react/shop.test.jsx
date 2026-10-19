@@ -56,11 +56,11 @@ describe('React shopping routes',()=>{
   mount(route);await waitFor(()=>expect(document.querySelector('#route-page h1')).toBeTruthy());
   expect(document.querySelector('#route-page')).not.toHaveTextContent('페이지를 찾을 수 없습니다.');
  });
- it('submits consent and profile name',async()=>{
+ it('updates the signed-in member profile',async()=>{
   const {calls}=mount('/signup');await screen.findByLabelText('이름 / 닉네임');
   const user=userEvent.setup();await user.clear(screen.getByLabelText('이름 / 닉네임'));await user.type(screen.getByLabelText('이름 / 닉네임'),'새회원');
-  await user.click(screen.getByRole('checkbox'));await user.click(screen.getByRole('button',{name:'프로필 저장'}));
-  await waitFor(()=>expect(calls.some(([p,o])=>p==='/api/profile'&&o==='POST')).toBe(true));
+  await user.click(screen.getByRole('button',{name:'프로필 저장'}));
+  await waitFor(()=>expect(calls.some(([p,o,b])=>p==='/api/profile'&&o==='POST'&&b.name==='새회원')).toBe(true));
  });
  it('loads every administration view and submits product CRUD forms',async()=>{
   const {calls}=mount('/admin');const user=userEvent.setup();
