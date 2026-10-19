@@ -8,8 +8,13 @@
     "preview": "vite preview",
     "test:api": "node --test tests/api.test.mjs tests/image-policy.test.mjs",
     "test:react": "vitest run",
-    "test": "npm run test:api && npm run test:react",
-    "check": "node scripts/check-artifact.mjs"
+    "test": "npm run test:api && npm run test:auth && npm run test:react",
+    "check": "node scripts/check-artifact.mjs",
+    "dev:local": "node scripts/dev-local.mjs",
+    "api:start": "node server/index.mjs",
+    "db:setup": "node scripts/setup-mysql.mjs",
+    "test:auth": "node --test tests/auth.test.mjs",
+    "test:mysql": "node --test tests/mysql.test.mjs"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^7.0.1",
@@ -21,6 +26,7 @@
     "vitest": "^5.0.5"
   },
   "dependencies": {
+    "mysql2": "^3.24.6",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "react-router": "^8.4.0"

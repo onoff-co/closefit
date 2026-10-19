@@ -13,8 +13,25 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_ROOT_PASSWORD: ci-fixture-password
+          MYSQL_ROOT_HOST: "%"
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -pci-fixture-password"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
     env:
       CLOSEFIT_BASE_PATH: /closefit/
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: ci-fixture-password
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
@@ -23,6 +40,7 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm test
+      - run: npm run test:mysql
       - run: npm audit --audit-level=high
       - run: npm run build
       - run: npm run check
