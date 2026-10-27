@@ -31,6 +31,13 @@
       "kind": "generated-textile-closeup",
       "reference_images_used": false,
       "prompt": "Original photorealistic premium menswear product close-up photograph, wide landscape 16:9 editorial banner. Still life of a folded warm sand cotton shirt, dark indigo denim and olive ribbed knit on warm gray stone, shot very close at an oblique angle. Rich natural textile weave, precise visible stitches, buttons, layered fabric edges and gentle organic folds. Soft side daylight and subdued shadows, quiet olive, taupe, cream and charcoal palette, luxurious understated fashion direction. Garments occupy right side with darker soft negative space on left for website headline. No humans, no hands, no faces, no brand labels, no logos, no text, no watermarks, no borrowed product designs. Newly invented generic garments. This must be an original generated product photograph, not stock photography."
+    },
+    {
+      "file": "beauty-academy-hero.png",
+      "origin": "image_gen.imagegen",
+      "kind": "generated-beauty-academy-campaign",
+      "reference_images_used": false,
+      "prompt": "Wide editorial hero image for a Korean beauty academy website: confident Korean female beauty student in a cream and blush-pink studio, professional hair styling tools, subtle beauty training atmosphere, soft window light, refined magazine photography, generous negative space on the left for headline, no logos, no watermark, no text, 16:9."
     }
   ]
 }

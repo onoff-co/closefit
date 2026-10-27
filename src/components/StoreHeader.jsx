@@ -1,15 +1,261 @@
-import {assetUrl} from '../lib/assets.js';
-import DemoSignOut from './DemoSignOut.jsx';
-import {useEffect,useState} from 'react';import {Link,useLocation,useNavigate} from 'react-router';import {useStore} from '../state/StoreContext.jsx';
-export const categories=['OUTER','TOP','SHIRTS','PANTS','SUIT','SHOES','BAG & ACC'];
-const groups={SHOP:[['ALL','전체 상품'],...categories.map(x=>[x,x])],'BEST 50':[['BEST','베스트 전체'],['OUTER','인기 아우터'],['TOP','인기 상의'],['PANTS','인기 팬츠']],NEW:[['NEW','신상품 전체'],['AUTUMN','가을 상품']],...Object.fromEntries(categories.map(x=>[x,[[x,x+' 전체']]]))};
-function Icon({type}){return <svg viewBox="0 0 24 24" aria-hidden="true">{type==='account'?<><circle cx="12" cy="7" r="4"/><path d="M4 22v-3a8 8 0 0 1 16 0v3"/></>:type==='search'?<><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></>:type==='heart'?<path d="M20 5c-3-3-6 0-8 2-2-2-5-5-8-2-4 4 2 9 8 14 6-5 12-10 8-14Z"/>:<path d="M5 7h14l1 14H4L5 7Z M8 8V6a4 4 0 0 1 8 0v2"/>}</svg>}
-function SearchForm(){const [query,setQuery]=useState(''),navigate=useNavigate(),{setModal}=useStore();return <form className="shop-search" onSubmit={e=>{e.preventDefault();setModal(null);navigate('/shop?q='+encodeURIComponent(query))}}><label htmlFor="header-query">찾고 있는 상품</label><input id="header-query" autoFocus value={query} onChange={e=>setQuery(e.target.value)} type="search" placeholder="상품명을 입력해주세요" required/><button>검색</button></form>}
-export default function StoreHeader(){
- const {user,cart,setModal}=useStore(),location=useLocation(),[open,setOpen]=useState(null);
- useEffect(()=>setOpen(null),[location]);
- const name=user?(user.profile?.name?.trim()||user.name||user.displayName||user.email?.split('@')[0]||'회원'):'';
- function menu(name,category){const items=groups[name];return <div className={'nav-group '+(open===name?'open':'')} key={name} onMouseEnter={()=>setOpen(name)} onMouseLeave={()=>setOpen(null)} onBlur={e=>{if(!e.currentTarget.contains(e.relatedTarget))setOpen(null)}} onKeyDown={e=>{if(e.key==='Escape'){setOpen(null);e.currentTarget.querySelector('a')?.focus()}}}><Link to={'/shop?category='+encodeURIComponent(category)}>{name}</Link>{items&&<><button className="dropdown-toggle" aria-label={name+' 메뉴 열기'} aria-expanded={open===name} onClick={()=>setOpen(open===name?null:name)}><span aria-hidden="true">···</span></button><div className="nav-menu"><small>{name} COLLECTION</small>{items.map(([filter,label])=><Link key={filter} to={'/shop?category='+encodeURIComponent(filter)}>{label}</Link>)}</div></>}</div>}
- const info=title=>setModal({title,content:<><p>현재 준비 중인 서비스입니다.</p><Link to="/shop" className="text-link">상품 둘러보기</Link></>});
- return <><a className="skip" href="#page-content">본문 바로가기</a><div className="announcement">A NEW SEASON, A NEW PERSPECTIVE <span>지금, 가을을 입을 시간</span><span className="announcement-right">2026 FALL COLLECTION</span></div><header><Link className="logo brand-image" to="/" aria-label="클로즈핏"><img src={assetUrl('/assets/closefit-logo.png')} alt="클로즈핏" width="1996" height="788"/></Link><nav aria-label="주 메뉴">{menu('SHOP','ALL')}{menu('BEST 50','BEST')}{menu('NEW','NEW')}<button id="search-open" aria-label="상품 검색" onClick={()=>setModal({title:'상품 검색',content:<SearchForm/>})}><Icon type="search"/></button></nav><div className="tools"><div className="header-account-group">{user&&<><Link className="header-member-name" to="/account"><span className="account-name">{name}님</span></Link><DemoSignOut className="header-signout"/></>}<Link className="account-icon" to={user?'/account':'/login'} aria-label={user?name+'님 마이페이지':'로그인 / 회원가입'} title={user?name+'님 마이페이지':undefined}><Icon type="account"/></Link></div><Link id="wish-open" className="tool-link" to="/wishlist" aria-label="찜한 상품"><Icon type="heart"/></Link><Link id="bag-open" className="tool-link" to="/cart" aria-label="장바구니"><Icon type="bag"/><span id="bag-count">{cart.reduce((n,x)=>n+x.qty,0)}</span></Link><button className="mobile-menu" aria-label="전체 메뉴" onClick={()=>setModal({title:'SHOPPING MENU',content:<div className="menu-links">{[['/shop','전체 상품'],...categories.map(c=>['/shop?category='+encodeURIComponent(c),c]),[user?'/account':'/login',user?'마이페이지':'로그인 / 회원가입'],['/wishlist','찜한 상품'],['/cart','장바구니']].map(([to,label])=><Link key={to} to={to}>{label}</Link>)}</div>})}>☰</button></div></header><div className="category-nav" aria-label="상품 카테고리"><Link className="season" to="/shop?category=AUTUMN">AUTUMN EDIT</Link>{categories.map(c=>menu(c,c))}<span/><button onClick={()=>info('EVENT')}>EVENT</button><Link to="/shop?category=SALE">SALE</Link></div></>;
+import { assetUrl } from "../lib/assets.js";
+import DemoSignOut from "./DemoSignOut.jsx";
+import { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router";
+import { useStore } from "../state/StoreContext.jsx";
+export const categories = [
+  "OUTER",
+  "TOP",
+  "SHIRTS",
+  "PANTS",
+  "SUIT",
+  "SHOES",
+  "BAG & ACC",
+];
+const groups = {
+  SHOP: [["ALL", "전체 상품"], ...categories.map((x) => [x, x])],
+  "BEST 50": [
+    ["BEST", "베스트 전체"],
+    ["OUTER", "인기 아우터"],
+    ["TOP", "인기 상의"],
+    ["PANTS", "인기 팬츠"],
+  ],
+  NEW: [
+    ["NEW", "신상품 전체"],
+    ["AUTUMN", "가을 상품"],
+  ],
+  ...Object.fromEntries(categories.map((x) => [x, [[x, x + " 전체"]]])),
+};
+function Icon({ type }) {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      {type === "account" ? (
+        <>
+          <circle cx="12" cy="7" r="4" />
+          <path d="M4 22v-3a8 8 0 0 1 16 0v3" />
+        </>
+      ) : type === "search" ? (
+        <>
+          <circle cx="10.5" cy="10.5" r="6.5" />
+          <path d="m16 16 5 5" />
+        </>
+      ) : type === "heart" ? (
+        <path d="M20 5c-3-3-6 0-8 2-2-2-5-5-8-2-4 4 2 9 8 14 6-5 12-10 8-14Z" />
+      ) : (
+        <path d="M5 7h14l1 14H4L5 7Z M8 8V6a4 4 0 0 1 8 0v2" />
+      )}
+    </svg>
+  );
+}
+function SearchForm() {
+  const [query, setQuery] = useState(""),
+    navigate = useNavigate(),
+    { setModal } = useStore();
+  return (
+    <form
+      className="shop-search"
+      onSubmit={(e) => {
+        e.preventDefault();
+        setModal(null);
+        navigate("/shop?q=" + encodeURIComponent(query));
+      }}
+    >
+      <label htmlFor="header-query">찾고 있는 상품</label>
+      <input
+        id="header-query"
+        autoFocus
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        type="search"
+        placeholder="상품명을 입력해주세요"
+        required
+      />
+      <button>검색</button>
+    </form>
+  );
+}
+export default function StoreHeader() {
+  const { user, cart, setModal } = useStore(),
+    location = useLocation(),
+    [open, setOpen] = useState(null);
+  useEffect(() => setOpen(null), [location]);
+  const name = user
+    ? user.profile?.name?.trim() ||
+      user.name ||
+      user.displayName ||
+      user.email?.split("@")[0] ||
+      "회원"
+    : "";
+  function menu(name, category) {
+    const items = groups[name];
+    return (
+      <div
+        className={"nav-group " + (open === name ? "open" : "")}
+        key={name}
+        onMouseEnter={() => setOpen(name)}
+        onMouseLeave={() => setOpen(null)}
+        onBlur={(e) => {
+          if (!e.currentTarget.contains(e.relatedTarget)) setOpen(null);
+        }}
+        onKeyDown={(e) => {
+          if (e.key === "Escape") {
+            setOpen(null);
+            e.currentTarget.querySelector("a")?.focus();
+          }
+        }}
+      >
+        <Link to={"/shop?category=" + encodeURIComponent(category)}>
+          {name}
+        </Link>
+        {items && (
+          <>
+            <button
+              className="dropdown-toggle"
+              aria-label={name + " 메뉴 열기"}
+              aria-expanded={open === name}
+              onClick={() => setOpen(open === name ? null : name)}
+            >
+              <span aria-hidden="true">···</span>
+            </button>
+            <div className="nav-menu">
+              <small>{name} COLLECTION</small>
+              {items.map(([filter, label]) => (
+                <Link
+                  key={filter}
+                  to={"/shop?category=" + encodeURIComponent(filter)}
+                >
+                  {label}
+                </Link>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+    );
+  }
+  const info = (title) =>
+    setModal({
+      title,
+      content: (
+        <>
+          <p>현재 준비 중인 서비스입니다.</p>
+          <Link to="/shop" className="text-link">
+            상품 둘러보기
+          </Link>
+        </>
+      ),
+    });
+  return (
+    <>
+      <a className="skip" href="#page-content">
+        본문 바로가기
+      </a>
+      <div className="announcement">
+        A NEW SEASON, A NEW PERSPECTIVE <span>지금, 가을을 입을 시간</span>
+        <span className="announcement-right">2026 FALL COLLECTION</span>
+      </div>
+      <header>
+        <Link className="logo brand-image" to="/" aria-label="클로즈핏">
+          <img
+            src={assetUrl("/assets/closefit-logo.png")}
+            alt="클로즈핏"
+            width="1996"
+            height="788"
+          />
+        </Link>
+        <nav aria-label="주 메뉴">
+          {menu("SHOP", "ALL")}
+          {menu("BEST 50", "BEST")}
+          {menu("NEW", "NEW")}
+          <button
+            id="search-open"
+            aria-label="상품 검색"
+            onClick={() =>
+              setModal({ title: "상품 검색", content: <SearchForm /> })
+            }
+          >
+            <Icon type="search" />
+          </button>
+        </nav>
+        <div className="tools">
+          <div className="header-account-group">
+            {user && (
+              <>
+                <Link className="header-member-name" to="/account">
+                  <span className="account-name">{name}님</span>
+                </Link>
+                <DemoSignOut className="header-signout" />
+              </>
+            )}
+            <Link
+              className="account-icon"
+              to={user ? "/account" : "/login"}
+              aria-label={user ? name + "님 마이페이지" : "로그인 / 회원가입"}
+              title={user ? name + "님 마이페이지" : undefined}
+            >
+              <Icon type="account" />
+            </Link>
+          </div>
+          <Link
+            id="wish-open"
+            className="tool-link"
+            to="/wishlist"
+            aria-label="찜한 상품"
+          >
+            <Icon type="heart" />
+          </Link>
+          <Link
+            id="bag-open"
+            className="tool-link"
+            to="/cart"
+            aria-label="장바구니"
+          >
+            <Icon type="bag" />
+            <span id="bag-count">{cart.reduce((n, x) => n + x.qty, 0)}</span>
+          </Link>
+          <button
+            className="mobile-menu"
+            aria-label="전체 메뉴"
+            onClick={() =>
+              setModal({
+                title: "SHOPPING MENU",
+                content: (
+                  <div className="menu-links">
+                    {[
+                      ["/shop", "전체 상품"],
+                      ...categories.map((c) => [
+                        "/shop?category=" + encodeURIComponent(c),
+                        c,
+                      ]),
+                      [
+                        user ? "/account" : "/login",
+                        user ? "마이페이지" : "로그인 / 회원가입",
+                      ],
+                      ["/wishlist", "찜한 상품"],
+                      ["/cart", "장바구니"],
+                    ].map(([to, label]) => (
+                      <Link key={to} to={to}>
+                        {label}
+                      </Link>
+                    ))}
+                  </div>
+                ),
+              })
+            }
+          >
+            ☰
+          </button>
+        </div>
+      </header>
+      <div className="category-nav" aria-label="상품 카테고리">
+        <Link className="season" to="/shop?category=AUTUMN">
+          AUTUMN EDIT
+        </Link>
+        {categories.map((c) => menu(c, c))}
+        <span />
+        <button onClick={() => info("EVENT")}>EVENT</button>
+        <Link to="/shop?category=SALE">SALE</Link>
+      </div>
+    </>
+  );
 }
